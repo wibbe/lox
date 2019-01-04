@@ -122,6 +122,14 @@ static InterpretResult run()
 				}
 				break;
 
+			case OP_CONSTANT_LONG: {
+					int index = (*vm.ip++) << 8;
+					index = index | (*vm.ip++);
+					Value constant = vm.chunk->constants.values[index];
+					push(constant);
+				}
+				break;
+
 			case OP_NIL: push(NIL_VAL); break;
 			case OP_TRUE: push(BOOL_VAL(true)); break;
 			case OP_FALSE: push(BOOL_VAL(false)); break;
@@ -131,6 +139,7 @@ static InterpretResult run()
 					push(BOOL_VAL(valuesEqual(a, b)));
 				}
 				break;
+
 			case OP_GREATER:	BINARY_OP(BOOL_VAL, >); break;
 			case OP_LESS:		BINARY_OP(BOOL_VAL, <); break;
 			case OP_ADD: {
@@ -151,12 +160,14 @@ static InterpretResult run()
 					}
 				}
 				break;
+
 			case OP_SUBTRACT: 	BINARY_OP(NUMBER_VAL, -); break;
 			case OP_MULTIPLY: 	BINARY_OP(NUMBER_VAL, *); break;
 			case OP_DIVIDE:   	BINARY_OP(NUMBER_VAL, /); break;
 			case OP_NOT:
 				push(BOOL_VAL(isFalsey(pop())));
 				break;
+
 			case OP_NEGATE:   
 				if (!IS_NUMBER(peek(0)))
 				{
